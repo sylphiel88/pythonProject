@@ -24,7 +24,7 @@ while True:
         if str1 != '' and str1 != 'Gobl':
             foundcards = Card.where(language='german').where(name=str1).all()
         if len(foundcards) != 1:
-            if len(cardn)!=0:
+            if len(cardn) != 0:
                 cardn.pop(-1)
                 str1 = ' '.join(cardn)
                 print(str1)
@@ -32,7 +32,8 @@ while True:
             break
         if len(cardn) == 0 and len(foundcards) != 1:
             j += 1
-            var1, binaryt = cv2.threshold(cutimage, binval[j], 255, cv2.THRESH_BINARY)
+            if j < 4:
+                var1, binaryt = cv2.threshold(cutimage, binval[j], 255, cv2.THRESH_BINARY)
             break
     if len(foundcards) == 1:
         break
