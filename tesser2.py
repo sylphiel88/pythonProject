@@ -4,7 +4,7 @@ from pytesseract import Output
 from mtgsdk import Card
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
-img_source = cv2.imread('magic6.jpg')
+img_source = cv2.imread('magic5.jpg')
 greyscale = cv2.cvtColor(img_source, cv2.COLOR_BGR2GRAY)
 cutimage = greyscale[20:40, 20:190]
 cardn = ''
@@ -13,6 +13,8 @@ binval = (80, 100, 127, 150)
 binaryt = cutimage
 foundcards = []
 while True:
+    if(j==-1):
+        print("Bildmodus: Graustufen")
     cardn = pytesseract.image_to_string(binaryt, lang='deu', output_type=Output.STRING).rstrip().lstrip().strip(
         '.').split(' ')
     str1 = ' '.join(cardn)
@@ -33,7 +35,8 @@ while True:
         if len(cardn) == 0 and len(foundcards) != 1:
             j += 1
             if j < 4:
-                var1, binaryt = cv2.threshold(cutimage, binval[j], 255, cv2.THRESH_BINARY)
+                var1, binaryt= cv2.threshold(cutimage, binval[j], 255, cv2.THRESH_BINARY)
+                print("Bildmodus: Threshold-"+str(binval[j]))
             break
     if len(foundcards) == 1:
         break
