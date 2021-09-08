@@ -127,8 +127,10 @@ while True:
         cardn = pytesseract.image_to_string(imgrey, 'deu', output_type=Output.STRING).strip(
             "'*/-_?)(\\\n").lstrip().rstrip()
         print(cardn)
-        card = Card.where(lang='deutsch').where(name=cardn).all()
+        card = Card.where(language='german').where(name=cardn).all()[0]
         print(card.name,card.id)
         cardbool = False
+    if not cardbool:
+        cv2.putText(imCopy,str(card.name),(50,180),cv2.FONT_HERSHEY_PLAIN,4,(50,50,50),8)
     cv2.imshow("Karte", imCopy)
     cv2.waitKey(1)
