@@ -4,9 +4,11 @@ from pytesseract import Output
 from mtgsdk import Card
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
-img_source = cv2.imread('magic5.jpg')
+# img_source = cv2.imread('magic6.jpg')
+img_source=cv2.imread("magic8.jpg")
 greyscale = cv2.cvtColor(img_source, cv2.COLOR_BGR2GRAY)
-cutimage = greyscale[20:40, 20:190]
+cutimage = greyscale[80:150,750:1200]
+# cutimage =greyscale[20:40,20:190]
 cardn = ''
 j = -1
 binval = (80, 100, 127, 150)
@@ -25,6 +27,15 @@ while True:
         cv2.waitKey(1)
         if str1 != '' and str1 != 'Gobl':
             foundcards = Card.where(language='german').where(name=str1).all()
+            if len(foundcards)>0:
+                temp_name=foundcards[0].name
+                for card in foundcards:
+                    if card.name==temp_name:
+                        foundcardsz=[foundcards[0]]
+                    else:
+                        foundcardsz=[1,1]
+                        break
+                foundcards=foundcardsz
         if len(foundcards) != 1:
             if len(cardn) != 0:
                 cardn.pop(-1)
