@@ -114,17 +114,23 @@ while True:
     ymx = max(y)
     imCopy = imCopyr[ymn:ymx, xmn:xmx]                          # Das gedrehte Bild wird auf die neuen maximalen x,y
     imCopy = cv2.resize(imCopy, (0, 0), fx=1000 / (ymx - ymn), fy=1000 / (ymx - ymn))# Werte gesetzt und um einen Faktor
-    cv2.rectangle(imCopy, (50, 60), (600, 120), (0, 0, 255), 3) # geresized. Es wird ein rotes Rechteck über den Karten
-    cardnimg = imCopy[60:120, 50:600]                           # Namen gelegt und der Inhalt in ein extrabild gelegt.
+    cv2.rectangle(imCopy, (50, 60), (550, 120), (0, 0, 255), 3) # geresized. Es wird ein rotes Rechteck über den Karten
+    cardnimg = imCopy[60:120, 50:550]                           # Namen gelegt und der Inhalt in ein extrabild gelegt.
     imgrey = cv2.cvtColor(cardnimg, cv2.COLOR_RGB2GRAY)         # dieses wird auf Graustufen gestellt.
     if i == 10:                                                 # nachdem sich die Kamera gefocused hat (etwa 10 Frames)
-        cardn = pytesseract.image_to_string(imgrey, 'deu', output_type=Output.STRING).strip( # wird der Text per
-            "'*/-_?)(\\\n").lstrip().rstrip()       # Tesseract OCR erkannt
-        print(cardn)                                # und einmalig ausgegeben
-        card = Card.where(language='german').where(name=cardn).all()[0] # der Empfangene (bei mir deutsche) Kartenname
+        cardn = pytesseract.image_to_string(imgrey, 'deu', output_type=Output.STRING).strip('*/-|\_?)(&1234567890').lstrip().rstrip().split(' ')       # Tesseract OCR erkannt
+        cardname=""
+        for word in cardn:
+            if len(word)>1:
+                cardname+=word+' '
+        cardname=cardname.lstrip().rstrip()
+        print(cardname)                                # und einmalig ausgegeben
+        card = Card.where(language='german').where(name=cardname).all()[0] # der Empfangene (bei mir deutsche) Kartenname
         print(card.name,card.id) # wird vom Magic SDK indefiziert und Name und Kartenid ausgegeben
         cardbool = True # da eine Karte gefunden wurde, wird der Cardbool auf true gesetz
     if cardbool: # ist dieser true wird der Kartenname auf das Bild übertragen
+        cv2.putText(imCopy, str(card.name), (50, 180), cv2.FONT_HERSHEY_PLAIN, 4, (220, 220, 220), 12)
         cv2.putText(imCopy,str(card.name),(50,180),cv2.FONT_HERSHEY_PLAIN,4,(50,50,50),8)
+
     cv2.imshow("Karte", imCopy) # Das Bild wird an den Benutzer gegeben
     cv2.waitKey(1) # und eine ms gewartet bevor der loop wieder startet.
