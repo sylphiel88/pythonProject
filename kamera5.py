@@ -1,11 +1,8 @@
 import math
-
 import cv2
 import pytesseract
-from cv2 import polylines
 from pytesseract import Output
 import numpy as np
-from mtgsdk import Set
 from mtgsdk import Card
 import imutils
 
@@ -15,8 +12,8 @@ lang = {'DE': 'german'}
 langd = {'DE': 'deu'}
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
 approxbool = True
-cardbool = True
-cam = cv2.VideoCapture(1)
+cardbool = False
+cam = cv2.VideoCapture(0)
 cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
 cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 i = 0
@@ -123,14 +120,14 @@ while True:
     cv2.rectangle(imCopy, (50, 60), (600, 120), (0, 0, 255), 3)
     cardnimg = imCopy[60:120, 50:600]
     imgrey = cv2.cvtColor(cardnimg, cv2.COLOR_RGB2GRAY)
-    if cardbool and i == 10:
+    if i == 10:
         cardn = pytesseract.image_to_string(imgrey, 'deu', output_type=Output.STRING).strip(
             "'*/-_?)(\\\n").lstrip().rstrip()
         print(cardn)
         card = Card.where(language='german').where(name=cardn).all()[0]
         print(card.name,card.id)
-        cardbool = False
-    if not cardbool:
+        cardbool = True
+    if cardbool:
         cv2.putText(imCopy,str(card.name),(50,180),cv2.FONT_HERSHEY_PLAIN,4,(50,50,50),8)
     cv2.imshow("Karte", imCopy)
     cv2.waitKey(1)
