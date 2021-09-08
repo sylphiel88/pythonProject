@@ -117,7 +117,7 @@ while True:
     cv2.rectangle(imCopy, (50, 60), (550, 120), (0, 0, 255), 3) # geresized. Es wird ein rotes Rechteck über den Karten
     cardnimg = imCopy[60:120, 50:550]                           # Namen gelegt und der Inhalt in ein extrabild gelegt.
     imgrey = cv2.cvtColor(cardnimg, cv2.COLOR_RGB2GRAY)         # dieses wird auf Graustufen gestellt.
-    if i == 10:                                                 # nachdem sich die Kamera gefocused hat (etwa 10 Frames)
+    if i == 40:                                                 # nachdem sich die Kamera gefocused hat (etwa 10 Frames)
         cardn = pytesseract.image_to_string(imgrey, 'deu', output_type=Output.STRING).strip('*/-|\_?)(&1234567890').lstrip().rstrip().split(' ')       # Tesseract OCR erkannt
         cardname=""
         for word in cardn:
